@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nima & Nico – Betreuungsplan 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --nawied:#1a6fcf; --nawied-light:#e8f2ff;
+    --meike:#d63384;  --meike-light:#fce4ef;
+    --handover:#f59e0b; --handover-light:#fff8e1;
+    --nima:#ff7b2e; --nima-light:#fff3ec;
+    --nico:#2ec4b6; --nico-light:#eafaf9;
+    --ferien:#22c55e; --ferien-light:#dcfce7;
+    --feiertag:#a855f7; --feiertag-light:#f3e8ff;
+    --fussball:#16a34a; --fussball-light:#dcfce7;
+    --bg:#f5f7fb; --card:#fff; --text:#1a2340; --muted:#7a8aaa;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+    background-image:radial-gradient(circle at 15% 15%,rgba(26,111,207,.06) 0%,transparent 50%),
+    radial-gradient(circle at 85% 85%,rgba(214,51,132,.06) 0%,transparent 50%)}
+
+  header{background:linear-gradient(135deg,#1a2340,#2d3a5e);color:#fff;padding:18px 32px;
+    display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+  .hdr-l{display:flex;align-items:center;gap:13px}
+  .hdr-emoji{font-size:2.3rem}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.55rem;font-weight:800;line-height:1.1}
+  header h1 span{opacity:.5;font-size:.8rem;font-weight:400;display:block}
+  .clock{text-align:right;font-family:'Baloo 2',cursive}
+  .ct{font-size:2rem;font-weight:800;letter-spacing:2px}
+  .cd{font-size:.8rem;opacity:.5;text-transform:capitalize}
+
+  .legend{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;
+    padding:10px 32px;background:#fff;border-bottom:1px solid #eef0f5}
+  .li{display:flex;align-items:center;gap:6px;font-size:.76rem;font-weight:700}
+  .ld{width:11px;height:11px;border-radius:3px}
+  .ld-n{background:var(--nawied)} .ld-m{background:var(--meike)}
+  .ld-h{background:var(--handover)} .ld-f{background:var(--ferien)}
+  .ld-ft{background:var(--feiertag)} .ld-fb{background:var(--fussball)}
+
+  .rules-box{background:var(--card);border-radius:14px;padding:12px 20px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05);margin:12px 32px 4px;
+    display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+  .rule{display:flex;align-items:center;gap:6px;font-size:.76rem;font-weight:700}
+  .rb{padding:2px 9px;border-radius:20px;font-size:.71rem;font-weight:800}
+  .rb-n{background:var(--nawied-light);color:var(--nawied)}
+  .rb-m{background:var(--meike-light);color:var(--meike)}
+  .rb-h{background:var(--handover-light);color:#b45309}
+
+  .main{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px 32px;max-width:1400px;margin:0 auto}
+
+  /* TODAY */
+  .today-card{grid-column:1/-1;background:var(--card);border-radius:18px;padding:20px 24px;
+    box-shadow:0 4px 18px rgba(0,0,0,.06);display:flex;gap:22px;align-items:flex-start;
+    animation:fadeUp .4s ease both}
+  .today-left{min-width:185px}
+  .today-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:3px}
+  .today-title{font-family:'Baloo 2',cursive;font-size:1.45rem;font-weight:800;line-height:1.1}
+  .today-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:30px;font-size:.76rem;font-weight:700}
+  .pill-n{background:var(--nawied-light);color:var(--nawied)}
+  .pill-m{background:var(--meike-light);color:var(--meike)}
+  .pill-h{background:var(--handover-light);color:#b45309}
+  .pill-f{background:var(--ferien-light);color:#15803d}
+  .pill-ft{background:var(--feiertag-light);color:#7e22ce}
+  .pill-nico{background:var(--nico-light);color:#0f766e}
+  .pill-fb{background:var(--fussball-light);color:var(--fussball);font-weight:800}
+
+  .today-tl{flex:1;display:flex;flex-direction:column;gap:7px}
+  .tl{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;background:var(--bg)}
+  .tl-n{border-left:4px solid var(--nawied)} .tl-m{border-left:4px solid var(--meike)}
+  .tl-ni{border-left:4px solid var(--nima)} .tl-nc{border-left:4px solid var(--nico)}
+  .tl-b{border-left:4px solid var(--muted)} .tl-hv{border-left:4px solid var(--handover)}
+  .tl-fb{border-left:4px solid var(--fussball);background:#f0fdf4}
+  .tl-time{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;min-width:52px}
+  .tl-icon{font-size:1.1rem}
+  .tl-desc strong{display:block;font-size:.87rem;font-weight:700}
+  .tl-desc span{font-size:.73rem;color:var(--muted)}
+
+  /* CHILD */
+  .child-card{background:var(--card);border-radius:18px;padding:18px 22px;
+    box-shadow:0 4px 18px rgba(0,0,0,.06);animation:fadeUp .4s ease .08s both}
+  .ch{display:flex;align-items:center;gap:11px;margin-bottom:13px}
+  .av{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+  .av-ni{background:var(--nima-light)} .av-nc{background:var(--nico-light)}
+  .cn{font-family:'Baloo 2',cursive;font-size:1.25rem;font-weight:800}
+  .ca{font-size:.74rem;color:var(--muted);font-weight:600}
+  .ir{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f0f4f8;font-size:.84rem}
+  .ir:last-child{border-bottom:none}
+  .ii{font-size:.95rem;min-width:20px;text-align:center}
+
+  /* FUSSBALL CARD */
+  .fussball-card{grid-column:1/-1;background:var(--card);border-radius:18px;padding:18px 24px;
+    box-shadow:0 4px 18px rgba(0,0,0,.06);border-left:5px solid var(--fussball);
+    animation:fadeUp .4s ease .1s both}
+  .fb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px}
+  .fb-item{background:#f0fdf4;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+  .fb-item.past{opacity:.45;filter:grayscale(.5)}
+  .fb-date{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--fussball);min-width:42px}
+  .fb-name{font-weight:700;font-size:.85rem}
+  .fb-who{font-size:.72rem;color:var(--muted)}
+
+  /* WEEK */
+  .week-card{grid-column:1/-1;background:var(--card);border-radius:18px;padding:18px 24px;
+    box-shadow:0 4px 18px rgba(0,0,0,.06);animation:fadeUp .4s ease .12s both}
+  .sec-title{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;margin-bottom:12px}
+  .wk-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .dc{text-align:center;padding:8px 3px;border-radius:11px;transition:transform .15s}
+  .dc:hover{transform:scale(1.04)}
+  .dn{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:3px}
+  .dd{font-family:'Baloo 2',cursive;font-size:1.25rem;font-weight:800;line-height:1;margin-bottom:3px}
+  .db{font-size:.62rem;font-weight:700;padding:2px 6px;border-radius:6px;display:inline-block}
+  .db-n{background:var(--nawied-light);color:var(--nawied)}
+  .db-m{background:var(--meike-light);color:var(--meike)}
+  .db-h{background:var(--handover-light);color:#b45309}
+  .dc-fer{outline:2px solid var(--ferien);outline-offset:-2px}
+  .dc-ft{outline:2px solid var(--feiertag);outline-offset:-2px}
+  .dc-fb{outline:2px solid var(--fussball);outline-offset:-2px}
+  .dc-extra{font-size:.56rem;color:var(--fussball);font-weight:700;margin-top:2px}
+  .dc-extra-gray{font-size:.56rem;color:var(--nico);font-weight:700;margin-top:2px}
+  .dc-today{background:#1a2340!important}
+  .dc-today .dn{color:rgba(255,255,255,.4)}
+  .dc-today .dd{color:#fff}
+  .dc-today .db{background:rgba(255,255,255,.18);color:#fff}
+  .dc-dim{opacity:.35}
+
+  /* MONTH */
+  .month-card{grid-column:1/-1;background:var(--card);border-radius:18px;padding:18px 24px;
+    box-shadow:0 4px 18px rgba(0,0,0,.06);animation:fadeUp .4s ease .16s both}
+  .mn{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+  .mn button{background:var(--bg);border:none;border-radius:8px;padding:5px 12px;font-size:.95rem;
+    cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;color:var(--text);transition:background .15s}
+  .mn button:hover{background:#e2e8f0}
+  .mt{font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:800}
+  .cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .ch2{text-align:center;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:3px 0 6px}
+  .cc{text-align:center;padding:4px 2px;border-radius:7px;font-size:.8rem;font-weight:700;
+    min-height:30px;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:1px;position:relative;cursor:default}
+  .cc:hover .cc-tip{display:block}
+  .cc-n{background:var(--nawied-light);color:var(--nawied)}
+  .cc-m{background:var(--meike-light);color:var(--meike)}
+  .cc-h{background:var(--handover-light);color:#b45309}
+  .cc-0{background:transparent}
+  .cc-today{outline:2px solid #1a2340;outline-offset:-2px}
+  .cc-fer{background-image:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(34,197,94,.28) 3px,rgba(34,197,94,.28) 6px)}
+  .cc-ft::after{content:'';position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:var(--feiertag)}
+  .cc-fb::before{content:'⚽';position:absolute;bottom:0;left:1px;font-size:.5rem}
+  .cc-vor::after{content:'🐻';position:absolute;top:1px;right:1px;font-size:.48rem}
+  .cc-tip{display:none;position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
+    background:#1a2340;color:#fff;font-size:.64rem;padding:3px 8px;border-radius:6px;white-space:nowrap;z-index:10}
+  .cc-before{background:#f0f4f8;color:#bbb}
+
+  .stats-row{display:flex;gap:10px;margin-top:13px}
+  .sb{flex:1;border-radius:10px;padding:10px 13px;text-align:center}
+  .sb-n{background:var(--nawied-light)} .sb-m{background:var(--meike-light)}
+  .sn{font-family:'Baloo 2',cursive;font-size:1.6rem;font-weight:800}
+  .sb-n .sn{color:var(--nawied)} .sb-m .sn{color:var(--meike)}
+  .sl{font-size:.72rem;font-weight:700;color:var(--muted)}
+
+  /* TRIPS */
+  .trips-card{grid-column:1/-1;background:var(--card);border-radius:18px;padding:18px 24px;
+    box-shadow:0 4px 18px rgba(0,0,0,.06);animation:fadeUp .4s ease .2s both}
+  .tg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:4px}
+  .ti{background:var(--bg);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:9px;transition:transform .15s,box-shadow .15s}
+  .ti:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.07)}
+  .ti-icon{font-size:1.5rem}
+  .ti-name{font-weight:700;font-size:.83rem}
+  .ti-dist{font-size:.7rem;color:var(--muted)}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+  footer{text-align:center;padding:12px;color:var(--muted);font-size:.7rem}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-l">
+    <span class="hdr-emoji">👦🏻👦🏻</span>
+    <h1>Nima & Nico – Betreuungsplan<span>Familienkalender 2026 · Nawied & Meike · ab 20. April</span></h1>
+  </div>
+  <div class="clock">
+    <div class="ct" id="ct">--:--</div>
+    <div class="cd" id="cd">...</div>
+  </div>
+</header>
+
+<div class="legend">
+  <div class="li"><div class="ld ld-n"></div>Nawied betreut</div>
+  <div class="li"><div class="ld ld-m"></div>Meike betreut</div>
+  <div class="li"><div class="ld ld-h"></div>Übergabetag</div>
+  <div class="li"><div class="ld ld-f"></div>Schulferien</div>
+  <div class="li"><div class="ld ld-ft"></div>Feiertag</div>
+  <div class="li"><div class="ld ld-fb"></div>⚽ Fußball-Turnier</div>
+</div>
+
+<div class="rules-box">
+  <span style="font-size:.76rem;font-weight:800;color:var(--muted)">JEDE WOCHE:</span>
+  <div class="rule"><span class="rb rb-m">Mo</span>Meike</div>
+  <div class="rule"><span class="rb rb-h">Di 16:00</span>→ Nawied</div>
+  <div class="rule"><span class="rb rb-n">Mi–Do</span>Nawied</div>
+  <div class="rule"><span class="rb rb-h">Do 12:00</span>→ Meike</div>
+  <span style="font-size:.76rem;font-weight:800;color:var(--muted);margin-left:8px">GERADE KW:</span>
+  <div class="rule"><span class="rb rb-h">Fr 17:00</span>→ Nawied bis Mo 12:00</div>
+</div>
+
+<div class="main">
+
+  <!-- TODAY -->
+  <div class="today-card">
+    <div class="today-left">
+      <div class="today-label">📅 Heute</div>
+      <div class="today-title" id="todayTitle">–</div>
+      <div class="today-pills" id="todayPills"></div>
+    </div>
+    <div class="today-tl" id="todayTL"></div>
+  </div>
+
+  <!-- NIMA -->
+  <div class="child-card">
+    <div class="ch"><div class="av av-ni">🦁</div>
+      <div><div class="cn" style="color:var(--nima)">Nima</div><div class="ca">6 Jahre · Schulkind</div></div>
+    </div>
+    <div class="ir"><span class="ii">🏫</span>Schule endet: <strong>&nbsp;14:30 Uhr</strong></div>
+    <div class="ir"><span class="ii">🎒</span>Rucksack: Hausaufgaben & Trinkflasche</div>
+    <div class="ir"><span class="ii">🍎</span>Snack nach der Schule</div>
+    <div class="ir"><span class="ii">📖</span>Hausaufgaben am Nachmittag</div>
+    <div class="ir"><span class="ii">⚽</span>Fußball-Turniere: April–Mai 2026</div>
+  </div>
+
+  <!-- NICO -->
+  <div class="child-card">
+    <div class="ch"><div class="av av-nc">🐻</div>
+      <div><div class="cn" style="color:var(--nico)">Nico</div><div class="ca">2 Jahre · Kindergartenkind</div></div>
+    </div>
+    <div class="ir"><span class="ii">🧸</span>KiGa endet: <strong>&nbsp;14:00 Uhr</strong></div>
+    <div class="ir"><span class="ii">👜</span>KiGa-Tasche nicht vergessen</div>
+    <div class="ir"><span class="ii">😴</span>Mittagsschlaf wenn möglich</div>
+    <div class="ir"><span class="ii">🍼</span>Windeln & Wechselkleidung prüfen</div>
+    <div class="ir"><span class="ii">🛁</span>Abend: Baden · Gute-Nacht-Ritual</div>
+  </div>
+
+  <!-- FUSSBALL -->
+  <div class="fussball-card">
+    <div class="sec-title">⚽ Nimas Fußball-Turniere 2026</div>
+    <div class="fb-grid" id="fbGrid"></div>
+  </div>
+
+  <!-- WEEK -->
+  <div class="week-card">
+    <div class="sec-title">📆 Diese Woche</div>
+    <div class="wk-grid" id="weekGrid"></div>
+  </div>
+
+  <!-- MONTH -->
+  <div class="month-card">
+    <div class="mn">
+      <button onclick="changeMonth(-1)">◀</button>
+      <div class="mt" id="monthTitle">–</div>
+      <button onclick="changeMonth(1)">▶</button>
+    </div>
+    <div class="cg" id="calGrid"></div>
+    <div class="stats-row" id="statsRow"></div>
+  </div>
+
+  <!-- TRIPS -->
+  <div class="trips-card">
+    <div class="sec-title">🗺️ Ausflugideen rund um Fritzlar</div>
+    <div class="tg">
+      <div class="ti"><span class="ti-icon">🏰</span><div><div class="ti-name">Fritzlar Altstadt</div><div class="ti-dist">0 km · Marktplatz & Dom</div></div></div>
+      <div class="ti"><span class="ti-icon">🌊</span><div><div class="ti-name">Edersee</div><div class="ti-dist">~30 km · Strand & Schiff</div></div></div>
+      <div class="ti"><span class="ti-icon">🐘</span><div><div class="ti-name">Zoo Kassel</div><div class="ti-dist">~25 km · Tiere & Spielplatz</div></div></div>
+      <div class="ti"><span class="ti-icon">🏊</span><div><div class="ti-name">Schwimmbad Bad Zwesten</div><div class="ti-dist">~15 km · Wasserpark</div></div></div>
+      <div class="ti"><span class="ti-icon">⛵</span><div><div class="ti-name">Diemelsee</div><div class="ti-dist">~50 km · Ruhe & Natur</div></div></div>
+      <div class="ti"><span class="ti-icon">🧗</span><div><div class="ti-name">Kletterwald Kassel</div><div class="ti-dist">~28 km · Abenteuer für Nima</div></div></div>
+      <div class="ti"><span class="ti-icon">🎡</span><div><div class="ti-name">Stadtpark Kassel</div><div class="ti-dist">~25 km · Spielplatz & Picknick</div></div></div>
+      <div class="ti"><span class="ti-icon">🦕</span><div><div class="ti-name">Grube Messel Museum</div><div class="ti-dist">~120 km · Dinos & Fossilien</div></div></div>
+    </div>
+  </div>
+
+</div>
+<footer>Nima 🦁 & Nico 🐻 · Betreuungsplan 2026 · Nawied & Meike · ab 20. April 2026 · Automatisch aktualisiert</footer>
+
+<script>
+// ── DATEN ────────────────────────────────────────────────────
+const START = new Date(2026,3,20);
+
+const FEIERTAGE = {
+  '2026-05-01':'Tag der Arbeit',
+  '2026-05-14':'Christi Himmelfahrt',
+  '2026-05-25':'Pfingstmontag',
+  '2026-06-04':'Fronleichnam',
+  '2026-06-05':'Brückentag',
+  '2026-10-03':'Tag der Deutschen Einheit',
+  '2026-12-25':'1. Weihnachtsfeiertag',
+  '2026-12-26':'2. Weihnachtsfeiertag',
+};
+
+const VORANMELDEN = new Set(['2026-05-15','2026-06-05']);
+
+const FUSSBALL = [
+  {date:'2026-04-26', label:'Edermünde Jungs'},
+  {date:'2026-05-03', label:'Metze / Chattengau'},
+  {date:'2026-05-10', label:'Edermünde Mädels'},
+  {date:'2026-05-17', label:'Brunslar / Wolfershausen'},
+  {date:'2026-05-31', label:'Geismar / H/L/K/Z'},
+];
+// Als schnelles Lookup
+const FUSSBALL_MAP = {};
+FUSSBALL.forEach(f => FUSSBALL_MAP[f.date] = f.label);
+
+const FERIEN_RANGES = [
+  {start:'2026-06-29',end:'2026-08-08',name:'Sommerferien'},
+  {start:'2026-10-05',end:'2026-10-17',name:'Herbstferien'},
+  {start:'2026-12-23',end:'2026-12-31',name:'Weihnachtsferien'},
+];
+
+const MONTHS_DE=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const DAYS_SHORT=['Mo','Di','Mi','Do','Fr','Sa','So'];
+const DAY_NAMES=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+
+// ── HILFSFUNKTIONEN ──────────────────────────────────────────
+function dkey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function beforeStart(d){return d<START}
+function ferienInfo(date){
+  const t=date.getTime();
+  for(const r of FERIEN_RANGES)
+    if(t>=new Date(r.start).getTime()&&t<=new Date(r.end).getTime()+86399999) return r.name;
+  return null;
+}
+function getKW(date){
+  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+  d.setUTCDate(d.getUTCDate()+4-(d.getUTCDay()||7));
+  const y=new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  return Math.ceil((((d-y)/86400000)+1)/7);
+}
+
+/*
+  BETREUUNGSMUSTER (aus PDF bestätigt):
+  Jede Woche:
+    Mo  → Meike  (außer nach geradem Wochenende → Übergabe 12:00)
+    Di  → Übergabe Meike→Nawied 16:00
+    Mi  → Nawied
+    Do  → Übergabe Nawied→Meike 12:00
+  Ungerade KW: Fr/Sa/So → Meike
+  Gerade KW:   Fr → Übergabe Meike→Nawied 17:00 / Sa/So → Nawied
+               nächster Mo → Übergabe Nawied→Meike 12:00
+*/
+function getStatus(date){
+  const dow=date.getDay();
+  const kw=getKW(date);
+  const even=kw%2===0;
+  if(dow===1){
+    const prevEven=(kw-1)%2===0;
+    return prevEven?'h-to-meike-mo':'meike';
+  }
+  if(dow===2) return 'h-to-nawied-di';
+  if(dow===3) return 'nawied';
+  if(dow===4) return 'h-to-meike-do';
+  if(dow===5) return even?'h-to-nawied-fr':'meike';
+  if(dow===6) return even?'nawied':'meike';
+  if(dow===0) return even?'nawied':'meike';
+  return 'meike';
+}
+
+function meta(s){
+  const M={
+    'nawied':          {t:'👨 Nawied',         pc:'pill-n',wc:'db-n',cc:'cc-n',own:'nawied'},
+    'meike':           {t:'👩 Meike',           pc:'pill-m',wc:'db-m',cc:'cc-m',own:'meike'},
+    'h-to-nawied-di':  {t:'🔄 Di→Nawied 16:00', pc:'pill-h',wc:'db-h',cc:'cc-h',own:'nawied'},
+    'h-to-nawied-fr':  {t:'🔄 Fr→Nawied 17:00', pc:'pill-h',wc:'db-h',cc:'cc-h',own:'nawied'},
+    'h-to-meike-do':   {t:'🔄 Do→Meike 12:00',  pc:'pill-h',wc:'db-h',cc:'cc-h',own:'meike'},
+    'h-to-meike-mo':   {t:'🔄 Mo→Meike 12:00',  pc:'pill-h',wc:'db-h',cc:'cc-h',own:'meike'},
+  };
+  return M[s]||M['meike'];
+}
+
+// ── CLOCK ────────────────────────────────────────────────────
+function tick(){
+  const n=new Date();
+  document.getElementById('ct').textContent=n.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('cd').textContent=n.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
+}
+
+// ── FUSSBALL CARD ────────────────────────────────────────────
+function buildFussball(){
+  const now=new Date();
+  const grid=document.getElementById('fbGrid');
+  grid.innerHTML='';
+  FUSSBALL.forEach(f=>{
+    const d=new Date(f.date);
+    const past=d<now && dkey(d)!==dkey(now);
+    const s=getStatus(d);
+    const m=meta(s);
+    const tag=DAY_NAMES[d.getDay()];
+    grid.innerHTML+=`<div class="fb-item ${past?'past':''}">
+      <div>
+        <div class="fb-date">${d.getDate()}.${String(d.getMonth()+1).padStart(2,'0')}.</div>
+        <div style="font-size:.6rem;color:var(--muted);font-weight:700">${tag}</div>
+      </div>
+      <div>
+        <div class="fb-name">⚽ ${f.label}</div>
+        <div class="fb-who">${m.t}</div>
+      </div>
+    </div>`;
+  });
+}
+
+// ── TODAY ────────────────────────────────────────────────────
+function buildToday(){
+  const now=new Date();
+  const dow=now.getDay();
+  const key=dkey(now);
+  const s=getStatus(now);
+  const m=meta(s);
+  const ft=FEIERTAGE[key];
+  const fer=ferienInfo(now);
+  const vor=VORANMELDEN.has(key);
+  const fb=FUSSBALL_MAP[key];
+  const before=beforeStart(now);
+
+  document.getElementById('todayTitle').textContent=`${DAY_NAMES[dow]}, ${now.getDate()}. ${MONTHS_DE[now.getMonth()]}`;
+
+  const pills=document.getElementById('todayPills');
+  if(before){
+    pills.innerHTML=`<span class="pill pill-m">Plan startet am 20.04.2026</span>`;
+  } else {
+    pills.innerHTML=`<span class="pill ${m.pc}">${m.t}</span>`;
+    if(fb)  pills.innerHTML+=`<span class="pill pill-fb">⚽ ${fb}</span>`;
+    if(ft)  pills.innerHTML+=`<span class="pill pill-ft">🎉 ${ft}</span>`;
+    if(fer) pills.innerHTML+=`<span class="pill pill-f">🌿 ${fer}</span>`;
+    if(vor) pills.innerHTML+=`<span class="pill pill-nico">🐻 Voranmelden Nico!</span>`;
+  }
+
+  const tl=document.getElementById('todayTL');
+  tl.innerHTML='';
+  if(before){ add(tl,'','📅','Plan noch nicht gestartet','Betreuungsplan gilt ab 20. April 2026','tl-b'); return; }
+
+  const isWeekend=dow===0||dow===6;
+
+  if(fb) add(tl,'','⚽',`Fußball-Turnier: ${fb}`,'Nimas Turnier heute · Viel Erfolg! 🏆','tl-fb');
+
+  if(s==='h-to-nawied-di'){
+    add(tl,'14:00','🐻','Nico aus KiGa abholen','KiGa-Tasche & Windeln prüfen','tl-nc');
+    add(tl,'14:30','🦁','Nima kommt von der Schule','Snack & kurze Pause','tl-ni');
+    add(tl,'16:00','🔄','Übergabe an Nawied','Dienstag · Meike → Nawied','tl-hv');
+    add(tl,'17:00','🍽️','Abendessen','Gemeinsam kochen','tl-b');
+    add(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tl-nc');
+    add(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hörspiel','tl-ni');
+  } else if(s==='h-to-meike-do'){
+    add(tl,'12:00','🔄','Übergabe an Meike','Donnerstag · Nawied → Meike','tl-hv');
+  } else if(s==='h-to-nawied-fr'){
+    add(tl,'14:00','🐻','Nico aus KiGa abholen','KiGa-Tasche & Windeln prüfen','tl-nc');
+    add(tl,'14:30','🦁','Nima kommt von der Schule','Snack & kurze Pause','tl-ni');
+    add(tl,'17:00','🔄','Übergabe an Nawied','Freitag gerade KW · Meike → Nawied','tl-hv');
+    add(tl,'19:00','🍽️','Abendessen','Gemeinsam kochen','tl-b');
+    add(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tl-nc');
+    add(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hörspiel','tl-ni');
+  } else if(s==='h-to-meike-mo'){
+    add(tl,'12:00','🔄','Übergabe an Meike','Montag nach geradem Wochenende','tl-hv');
+  } else if(isWeekend && meta(s).own==='nawied'){
+    add(tl,'08:30','🌅','Gemeinsames Frühstück','Gemütlicher Start','tl-b');
+    add(tl,'10:00','🗺️','Ausflug oder Spielzeit','Edersee, Zoo, Spielplatz ...','tl-b');
+    add(tl,'12:30','🍕','Mittagessen','Gemeinsam kochen','tl-b');
+    add(tl,'14:00','😴','Nico: Mittagsschlaf','Ruhige Zeit','tl-nc');
+    add(tl,'16:00','🎮','Spielzeit','Draußen oder Brettspiel','tl-b');
+    add(tl,'19:00','🛁','Abend-Routine','Baden, Zähne, Gute-Nacht-Geschichte','tl-b');
+  } else if(s==='nawied'){
+    add(tl,'14:00','🐻','Nico aus KiGa abholen','KiGa-Tasche & Windeln prüfen','tl-nc');
+    add(tl,'14:30','🦁','Nima kommt von der Schule','Snack & kurze Pause','tl-ni');
+    add(tl,'15:30','📖','Hausaufgaben Nima','Ruhige Lernzeit','tl-ni');
+    add(tl,'17:00','🍽️','Abendessen vorbereiten','Gemeinsam kochen','tl-b');
+    add(tl,'19:00','🛁','Badezimmer-Zeit','Zähne putzen, Buch vorlesen','tl-b');
+    add(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tl-nc');
+    add(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hörspiel','tl-ni');
+  } else {
+    add(tl,'','👩','Heute bei Meike','Einen schönen Tag!','tl-m');
+  }
+}
+
+function add(tl,time,icon,label,sub,cls){
+  tl.innerHTML+=`<div class="tl ${cls}">
+    <span class="tl-time">${time}</span>
+    <span class="tl-icon">${icon}</span>
+    <div class="tl-desc"><strong>${label}</strong><span>${sub}</span></div>
+  </div>`;
+}
+
+// ── WEEK ─────────────────────────────────────────────────────
+function buildWeek(){
+  const now=new Date();
+  const dow=now.getDay();
+  const monday=new Date(now);
+  monday.setDate(now.getDate()-(dow===0?6:dow-1));
+  const grid=document.getElementById('weekGrid');
+  grid.innerHTML='';
+  for(let i=0;i<7;i++){
+    const d=new Date(monday);
+    d.setDate(monday.getDate()+i);
+    const key=dkey(d);
+    const s=getStatus(d);
+    const m=meta(s);
+    const isToday=d.toDateString()===now.toDateString();
+    const ft=FEIERTAGE[key];
+    const fer=ferienInfo(d);
+    const vor=VORANMELDEN.has(key);
+    const fb=FUSSBALL_MAP[key];
+    const before=beforeStart(d);
+    const dim=m.own==='meike'&&!isToday||before;
+    grid.innerHTML+=`<div class="dc ${isToday?'dc-today':''} ${dim?'dc-dim':''} ${fer&&!isToday?'dc-fer':''} ${ft&&!isToday?'dc-ft':''} ${fb&&!isToday?'dc-fb':''}">
+      <div class="dn">${DAYS_SHORT[i]}</div>
+      <div class="dd">${d.getDate()}</div>
+      <div class="db ${isToday?'':m.wc}">${m.t}</div>
+      ${fb?`<div class="dc-extra">⚽ Turnier</div>`:''}
+      ${ft&&!fb?`<div class="dc-extra" style="color:var(--feiertag)">🎉 ${ft}</div>`:''}
+      ${fer&&!ft&&!fb?`<div class="dc-extra" style="color:var(--ferien)">🌿</div>`:''}
+      ${vor?`<div class="dc-extra-gray">🐻 Voranm.</div>`:''}
+    </div>`;
+  }
+}
+
+// ── MONTH ────────────────────────────────────────────────────
+let viewDate=new Date(); viewDate.setDate(1);
+function changeMonth(dir){viewDate.setMonth(viewDate.getMonth()+dir);buildMonth()}
+
+function buildMonth(){
+  const now=new Date();
+  const year=viewDate.getFullYear();
+  const month=viewDate.getMonth();
+  document.getElementById('monthTitle').textContent=`${MONTHS_DE[month]} ${year}`;
+  const firstDay=new Date(year,month,1);
+  const lastDay=new Date(year,month+1,0);
+  let startDow=firstDay.getDay();
+  startDow=startDow===0?6:startDow-1;
+  const grid=document.getElementById('calGrid');
+  grid.innerHTML='';
+  DAYS_SHORT.forEach(d=>{grid.innerHTML+=`<div class="ch2">${d}</div>`});
+  for(let i=0;i<startDow;i++) grid.innerHTML+=`<div class="cc cc-0"></div>`;
+  let nc=0,mc=0;
+  for(let day=1;day<=lastDay.getDate();day++){
+    const d=new Date(year,month,day);
+    const key=dkey(d);
+    const s=getStatus(d);
+    const m=meta(s);
+    const isToday=d.toDateString()===now.toDateString();
+    const ft=FEIERTAGE[key];
+    const fer=ferienInfo(d);
+    const vor=VORANMELDEN.has(key);
+    const fb=FUSSBALL_MAP[key];
+    const before=beforeStart(d);
+    if(!before){if(m.own==='nawied')nc++;else mc++;}
+    let tip=m.t;
+    if(fb) tip+=' · ⚽ '+fb;
+    if(ft) tip+=' · 🎉 '+ft;
+    if(fer) tip+=' · 🌿 '+fer;
+    if(vor) tip+=' · 🐻 Voranmelden Nico';
+    grid.innerHTML+=`<div class="cc ${before?'cc-before':m.cc} ${isToday?'cc-today':''} ${fer&&!before?'cc-fer':''} ${ft&&!before?'cc-ft':''} ${fb?'cc-fb':''} ${vor?'cc-vor':''}">
+      ${day}
+      <div class="cc-tip">${tip}</div>
+    </div>`;
+  }
+  document.getElementById('statsRow').innerHTML=`
+    <div class="sb sb-n"><div class="sn">${nc}</div><div class="sl">Nawied-Tage</div></div>
+    <div class="sb sb-m"><div class="sn">${mc}</div><div class="sl">Meike-Tage</div></div>`;
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+tick(); buildToday(); buildFussball(); buildWeek(); buildMonth();
+setInterval(()=>{tick();buildToday();buildWeek();},60000);
+</script>
+</body>
+</html>
