@@ -59,8 +59,32 @@
   .mt{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800}
   .cg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
   .ch2{text-align:center;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:2px 0 5px}
-  .cc{text-align:center;padding:3px 1px;border-radius:6px;font-size:.78rem;font-weight:700;min-height:28px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px;position:relative;cursor:default}
-  .cc:hover .tip{display:block}
+  .cc{text-align:center;padding:3px 1px;border-radius:6px;font-size:.78rem;font-weight:700;min-height:28px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px;position:relative;cursor:pointer}
+  .cc:hover{filter:brightness(.93);transform:scale(1.05);z-index:2}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:#fff;border-radius:20px;padding:24px 28px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:modalIn .2s ease}
+  @keyframes modalIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .modal-date{font-family:"Baloo 2",cursive;font-size:1.3rem;font-weight:800}
+  .modal-close{background:var(--bg);border:none;border-radius:8px;width:32px;height:32px;font-size:1.1rem;cursor:pointer;color:var(--muted);font-weight:700}
+  .modal-close:hover{background:#e2e8f0}
+  .modal-who{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:.8rem;font-weight:700;margin-bottom:12px}
+  .modal-sec{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:10px 0 5px}
+  .modal-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;background:var(--bg);margin-bottom:4px;font-size:.83rem;font-weight:600}
+  .modal-empty{font-size:.8rem;color:var(--muted);padding:4px 0}
+  .upcoming{grid-column:1/-1;background:var(--card);border-radius:16px;padding:16px 22px;box-shadow:0 4px 16px rgba(0,0,0,.06);animation:fu .4s ease .18s both}
+  .upl{display:flex;flex-direction:column;gap:5px;margin-top:10px;max-height:360px;overflow-y:auto}
+  .upi{display:flex;align-items:flex-start;gap:11px;padding:9px 12px;border-radius:10px;background:var(--bg);cursor:pointer;transition:background .15s}
+  .upi:hover{background:#e8f2ff}
+  .upi-l{text-align:center;min-width:44px}
+  .upi-day{font-family:"Baloo 2",cursive;font-size:1.05rem;font-weight:800;line-height:1}
+  .upi-mon{font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+  .upi-r{flex:1}
+  .upi-title{font-weight:700;font-size:.84rem}
+  .upi-sub{font-size:.71rem;color:var(--muted);margin-top:1px}
+  .upi-tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px}
+  .upi-tag{font-size:.64rem;font-weight:700;padding:2px 6px;border-radius:8px}
   .cc-n{background:var(--NL);color:var(--N)}.cc-m{background:var(--ML);color:var(--M)}.cc-h{background:var(--HL);color:#b45309}.cc-0{background:transparent}
   .cc-today{outline:2px solid #1a2340;outline-offset:-2px}
   .cc-fer{background-image:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(34,197,94,.26) 3px,rgba(34,197,94,.26) 6px)}
@@ -135,6 +159,10 @@
     <div class="mn"><button onclick="changeMonth(-1)">◀</button><div class="mt" id="monthTitle">–</div><button onclick="changeMonth(1)">▶</button></div>
     <div class="cg" id="calGrid"></div><div class="stats" id="statsRow"></div>
   </div>
+  <div class="upcoming">
+    <div class="sec">🔭 Vorschau – Nächste 6 Wochen</div>
+    <div class="upl" id="upcomingList"></div>
+  </div>
   <div class="trips"><div class="sec">🗺️ Ausflugideen rund um Fritzlar</div><div class="tg">
     <div class="ti"><span class="ti-i">🏰</span><div><div class="ti-n">Fritzlar Altstadt</div><div class="ti-d">0 km · Marktplatz & Dom</div></div></div>
     <div class="ti"><span class="ti-i">🌊</span><div><div class="ti-n">Edersee</div><div class="ti-d">~30 km · Strand & Schiff</div></div></div>
@@ -203,10 +231,188 @@ function buildMonth(){
   DS.forEach(d=>{g.innerHTML+=`<div class="ch2">${d}</div>`});
   for(let i=0;i<sd;i++)g.innerHTML+=`<div class="cc cc-0"></div>`;
   let nc=0,mc=0;
-  for(let day=1;day<=last.getDate();day++){const d=new Date(y,mo,day);const key=dkey(d);const s=getStatus(d);const m=smeta(s);const isToday=d.toDateString()===now.toDateString();const ft=FEIERTAGE[key];const fer=ferienName(d);const fb=FB[key];const vor=VORANMELDEN.has(key);const pre=beforeStart(d);if(!pre){if(m.own==='nawied')nc++;else mc++}let tip=m.t;if(fb)tip+=' · Fussball: '+fb;if(ft)tip+=' · '+ft;if(fer)tip+=' · '+fer;if(vor)tip+=' · Voranmelden Nico';g.innerHTML+=`<div class="cc ${pre?'cc-pre':m.cc} ${isToday?'cc-today':''} ${fer&&!pre?'cc-fer':''} ${ft&&!pre?'cc-ft':''} ${fb?'cc-fb':''} ${vor&&!ft?'cc-vor':''}">${day}<div class="tip">${tip}</div></div>`}
+  for(let day=1;day<=last.getDate();day++){const d=new Date(y,mo,day);const key=dkey(d);const s=getStatus(d);const m=smeta(s);const isToday=d.toDateString()===now.toDateString();const ft=FEIERTAGE[key];const fer=ferienName(d);const fb=FB[key];const vor=VORANMELDEN.has(key);const pre=beforeStart(d);if(!pre){if(m.own==='nawied')nc++;else mc++}let tip=m.t;if(fb)tip+=' · Fussball: '+fb;if(ft)tip+=' · '+ft;if(fer)tip+=' · '+fer;if(vor)tip+=' · Voranmelden Nico';g.innerHTML+=`<div class="cc ${pre?'cc-pre':m.cc} ${isToday?'cc-today':''} ${fer&&!pre?'cc-fer':''} ${ft&&!pre?'cc-ft':''} ${fb?'cc-fb':''} ${vor&&!ft?'cc-vor':''}" onclick="openDayModal('${key}')" title="${tip}">${day}</div>`}
   document.getElementById('statsRow').innerHTML=`<div class="sb sb-n"><div class="sn">${nc}</div><div class="sl">Nawied-Tage</div></div><div class="sb sb-m"><div class="sn">${mc}</div><div class="sl">Meike-Tage</div></div>`}
-tick();buildToday();buildFB();buildWeek();buildMonth();
+// GOOGLE KALENDER
+const ICAL_URL='https://calendar.google.com/calendar/ical/973ca0b6a9b13b247f9822d5f930492c8889a0c5a7fdb2fc0fa07ba1877c88c8%40group.calendar.google.com/public/basic.ics';
+const PROXY='https://api.allorigins.win/raw?url=';
+let GC_EVENTS=[];
+
+async function loadGoogleCalendar(){
+  try{
+    const res=await fetch(PROXY+encodeURIComponent(ICAL_URL));
+    if(!res.ok)return;
+    const text=await res.text();
+    GC_EVENTS=parseICAL(text);
+    renderGCCard();buildToday();buildWeek();buildMonth();
+  }catch(e){console.warn('Kalender nicht geladen',e)}
+}
+
+function parseICAL(text){
+  const events=[];
+  const blocks=text.split('BEGIN:VEVENT');
+  for(let i=1;i<blocks.length;i++){
+    const b=blocks[i];
+    const get=key=>{const m=b.match(new RegExp(key+'[^:]*:([^\r\n]+)'));return m?m[1].trim():''};
+    const summary=get('SUMMARY');const dtstart=get('DTSTART');const dtend=get('DTEND');
+    if(!summary||!dtstart)continue;
+    const pd=s=>{const d=s.replace(/T.*/,'');return new Date(d.slice(0,4)+'-'+d.slice(4,6)+'-'+d.slice(6,8))};
+    events.push({summary,start:pd(dtstart),end:dtend?pd(dtend):pd(dtstart)});
+  }
+  return events.sort((a,b)=>a.start-b.start);
+}
+
+function gcEventsOn(date){
+  const t=date.getTime();
+  return GC_EVENTS.filter(e=>{const s=e.start.getTime();const en=e.end.getTime();return t>=s&&t<(en>s?en:s+86400000)});
+}
+
+function renderGCCard(){
+  const old=document.getElementById('gcCard');if(old)old.remove();
+  const now=new Date();now.setHours(0,0,0,0);
+  const limit=new Date(now);limit.setDate(limit.getDate()+30);
+  const upcoming=GC_EVENTS.filter(e=>e.start>=now&&e.start<=limit);
+  if(upcoming.length===0)return;
+  const card=document.createElement('div');
+  card.id='gcCard';card.className='gc-card';
+  card.innerHTML='<div class="sec">📅 Nächste Termine – Google Kalender</div><div class="gc-list" id="gcList"></div>';
+  const trips=document.querySelector('.trips');
+  trips.parentNode.insertBefore(card,trips);
+  const list=card.querySelector('#gcList');
+  upcoming.forEach(ev=>{
+    const dateStr=ev.start.toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'});
+    const m=smeta(getStatus(ev.start));
+    list.innerHTML+=`<div class="gc-item"><div class="gc-date">${dateStr}</div><div><div class="gc-title">${ev.summary}</div><div class="gc-who">${m.t}</div></div></div>`;
+  });
+}
+
+const gcStyle=document.createElement('style');
+gcStyle.textContent='.gc-card{grid-column:1/-1;background:var(--card);border-radius:16px;padding:16px 22px;box-shadow:0 4px 16px rgba(0,0,0,.06);border-left:5px solid var(--N);animation:fu .4s ease both}.gc-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:10px}.gc-item{background:var(--NL);border-radius:11px;padding:10px 13px;display:flex;align-items:center;gap:10px}.gc-date{font-family:\'Baloo 2\',cursive;font-size:1rem;font-weight:800;color:var(--N);min-width:72px}.gc-title{font-weight:700;font-size:.84rem}.gc-who{font-size:.7rem;color:var(--muted);margin-top:2px}';
+document.head.appendChild(gcStyle);
+
+// MODAL
+function openDayModal(dateStr){
+  const d=new Date(dateStr);
+  const key=dateStr;
+  const s=getStatus(d);
+  const m=smeta(s);
+  const ft=FEIERTAGE[key];
+  const fer=ferienName(d);
+  const fb=FB[key];
+  const vor=VORANMELDEN.has(key);
+  const gcEvs=gcEventsOn(d);
+  const DN2=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  document.getElementById('modalDate').textContent=
+    DN2[d.getDay()]+', '+d.getDate()+'. '+MN[d.getMonth()]+' '+d.getFullYear();
+  const whoEl=document.getElementById('modalWho');
+  whoEl.innerHTML='<span class="modal-who '+m.pc+'">'+m.t+'</span>';
+  const body=document.getElementById('modalBody');
+  let html='';
+  // Besondere Ereignisse
+  const specials=[];
+  if(ft) specials.push({i:'🎉',t:ft});
+  if(fer) specials.push({i:'🌿',t:fer});
+  if(fb) specials.push({i:'⚽',t:'Fussball-Turnier: '+fb});
+  if(vor) specials.push({i:'🐻',t:'Voranmelden Nico!'});
+  if(specials.length>0){
+    html+='<div class="modal-sec">Besonderes</div>';
+    specials.forEach(e=>{html+='<div class="modal-row"><span>'+e.i+'</span><span>'+e.t+'</span></div>'});
+  }
+  // Google Kalender Termine
+  if(gcEvs.length>0){
+    html+='<div class="modal-sec">Google Kalender</div>';
+    gcEvs.forEach(e=>{html+='<div class="modal-row"><span>📅</span><span>'+e.summary+'</span></div>'});
+  }
+  // Tagesablauf
+  html+='<div class="modal-sec">Tagesablauf</div>';
+  const isWE=d.getDay()===0||d.getDay()===6;
+  if(s==='ho-di'){html+='<div class="modal-row"><span>16:00</span><span>🔄 Übergabe an Nawied</span></div>'}
+  else if(s==='ho-do'){html+='<div class="modal-row"><span>12:00</span><span>🔄 Übergabe an Meike</span></div>'}
+  else if(s==='ho-fr'){html+='<div class="modal-row"><span>17:00</span><span>🔄 Übergabe an Nawied</span></div>'}
+  else if(s==='ho-mo'){html+='<div class="modal-row"><span>12:00</span><span>🔄 Übergabe an Meike</span></div>'}
+  else if(!isWE&&(s==='nawied')){
+    html+='<div class="modal-row"><span>14:00</span><span>🐻 Nico aus KiGa abholen</span></div>';
+    html+='<div class="modal-row"><span>14:30</span><span>🦁 Nima von der Schule</span></div>';
+  } else if(isWE&&m.own==='nawied'){
+    html+='<div class="modal-row"><span>10:00</span><span>🗺️ Ausflug oder Spielzeit</span></div>';
+  } else {
+    html+='<div class="modal-row"><span>–</span><span>👩 Heute bei Meike</span></div>';
+  }
+  if(specials.length===0&&gcEvs.length===0&&!isWE&&s!=='ho-do'&&s!=='ho-mo'){
+    // nothing extra
+  }
+  body.innerHTML=html||'<div class="modal-empty">Keine besonderen Ereignisse</div>';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modalOverlay'))
+    document.getElementById('modalOverlay').classList.remove('open');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('modalOverlay').classList.remove('open')});
+
+// UPCOMING LIST
+function buildUpcoming(){
+  const now=new Date();now.setHours(0,0,0,0);
+  const limit=new Date(now);limit.setDate(limit.getDate()+42); // 6 Wochen
+  const list=document.getElementById('upcomingList');
+  if(!list)return;
+  const rows=[];
+  // Alle Tage durchlaufen
+  for(let d=new Date(now);d<=limit;d.setDate(d.getDate()+1)){
+    const key=dkey(d);
+    const s=getStatus(d);
+    const m=smeta(s);
+    const ft=FEIERTAGE[key];
+    const fer=ferienName(d);
+    const fb=FB[key];
+    const vor=VORANMELDEN.has(key);
+    const gcEvs=gcEventsOn(d);
+    const isHandover=s.startsWith('ho-');
+    const hasEvent=ft||fb||vor||gcEvs.length>0;
+    // Nur zeigen wenn Übergabe ODER besonderes Ereignis
+    if(!isHandover&&!hasEvent) continue;
+    const tags=[];
+    if(isHandover) tags.push({t:m.t,bg:m.pc==='pill-h'?'var(--HL)':'',cl:'#b45309'});
+    if(ft) tags.push({t:'🎉 '+ft,bg:'var(--ftL)',cl:'#7e22ce'});
+    if(fer&&!ft) tags.push({t:'🌿 '+fer,bg:'var(--ferL)',cl:'#15803d'});
+    if(fb) tags.push({t:'⚽ '+fb,bg:'var(--fbL)',cl:'var(--fb)'});
+    if(vor) tags.push({t:'🐻 Voranmelden Nico',bg:'var(--nicoL)',cl:'#0f766e'});
+    gcEvs.forEach(e=>tags.push({t:'📅 '+e.summary,bg:'var(--NL)',cl:'var(--N)'}));
+    const dateKey2=dkey(d);
+    const dayNum=d.getDate();
+    const mon=MN[d.getMonth()].slice(0,3);
+    const wday=['So','Mo','Di','Mi','Do','Fr','Sa'][d.getDay()];
+    const tagsHtml=tags.map(tg=>`<span class="upi-tag" style="background:${tg.bg};color:${tg.cl}">${tg.t}</span>`).join('');
+    // Betreuungsperson
+    const who=m.own==='nawied'?'👨 Nawied':'👩 Meike';
+    rows.push(`<div class="upi" onclick="openDayModal('${dateKey2}')">
+      <div class="upi-l"><div class="upi-day">${dayNum}</div><div class="upi-mon">${mon} ${wday}</div></div>
+      <div class="upi-r">
+        <div class="upi-title">${who}</div>
+        <div class="upi-tags">${tagsHtml}</div>
+      </div>
+    </div>`);
+  }
+  list.innerHTML=rows.length>0?rows.join(''):'<div style="color:var(--muted);font-size:.82rem;padding:8px 0">Keine besonderen Termine in den nächsten 6 Wochen</div>';
+}
+
+tick();buildToday();buildFB();buildWeek();buildMonth();buildUpcoming();
+loadGoogleCalendar();
 setInterval(()=>{tick();buildToday();buildWeek();},60000);
+setInterval(()=>{loadGoogleCalendar();buildUpcoming();},5*60*1000);
 </script>
+
+<!-- TAGES-MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <div class="modal-date" id="modalDate">–</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalWho"></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
 </body>
 </html>
