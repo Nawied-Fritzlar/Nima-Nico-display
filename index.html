@@ -139,7 +139,8 @@
   </div>
   <div class="child">
     <div class="ch"><div class="av av-ni">🦁</div><div><div class="cn" style="color:var(--nima)">Nima</div><div class="ca">6 Jahre · Schulkind</div></div></div>
-    <div class="ir"><span class="ii">🏫</span>Schule endet <strong>&nbsp;14:30 Uhr</strong></div>
+    <div class="ir"><span class="ii">🏫</span>Mo+Fr: Schulschluss <strong>12:30</strong> – kommt alleine</div>
+    <div class="ir"><span class="ii">🏫</span>Di+Mi+Do: Abholung <strong>Domplatz 14:10</strong></div>
     <div class="ir"><span class="ii">🎒</span>Rucksack: Hausaufgaben & Trinkflasche</div>
     <div class="ir"><span class="ii">🍎</span>Snack nach der Schule</div>
     <div class="ir"><span class="ii">📖</span>Hausaufgaben am Nachmittag</div>
@@ -210,12 +211,25 @@ function buildToday(){
   if(pre){row(tl,'','📅','Plan noch nicht gestartet','Ab 20. April 2026','tlr-b');return}
   const isWE=dow===0||dow===6;
   if(fb)row(tl,'','⚽',`Turnier: ${fb}`,'Nimas Fussball-Turnier heute','tlr-fb');
-  if(s==='ho-di'){row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln','tlr-nc');row(tl,'14:30','🦁','Nima von der Schule','Snack & Pause','tlr-ni');row(tl,'16:00','🔄','Uebergabe an Nawied','Dienstag · Meike -> Nawied','tlr-hv');row(tl,'17:00','🍽️','Abendessen','Gemeinsam kochen','tlr-b');row(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tlr-nc');row(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hoerspiel','tlr-ni')}
+  if(s==='ho-di'){row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln prüfen','tlr-nc');row(tl,'14:10','🦁','Nima am Domplatz abholen','Domplatz Fritzlar · Snack danach','tlr-ni');row(tl,'16:00','🔄','Übergabe an Nawied','Dienstag · Meike → Nawied','tlr-hv');row(tl,'17:00','🍽️','Abendessen','Gemeinsam kochen','tlr-b');row(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tlr-nc');row(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hörspiel','tlr-ni')}
   else if(s==='ho-do'){row(tl,'12:00','🔄','Uebergabe an Meike','Donnerstag · Nawied -> Meike','tlr-hv')}
-  else if(s==='ho-fr'){row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln','tlr-nc');row(tl,'14:30','🦁','Nima von der Schule','Snack & Pause','tlr-ni');row(tl,'17:00','🔄','Uebergabe an Nawied','Freitag gerade KW · Meike -> Nawied','tlr-hv');row(tl,'19:00','🍽️','Abendessen','Gemeinsam kochen','tlr-b');row(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tlr-nc');row(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hoerspiel','tlr-ni')}
-  else if(s==='ho-mo'){row(tl,'12:00','🔄','Uebergabe an Meike','Montag nach geradem Wochenende','tlr-hv')}
-  else if(isWE&&m.own==='nawied'){row(tl,'08:30','🌅','Gemeinsames Fruehstueck','Gemuetlicher Start','tlr-b');row(tl,'10:00','🗺️','Ausflug oder Spielzeit','Edersee, Zoo, Spielplatz ...','tlr-b');row(tl,'12:30','🍕','Mittagessen','Gemeinsam kochen','tlr-b');row(tl,'14:00','😴','Nico: Mittagsschlaf','Ruhige Zeit','tlr-nc');row(tl,'16:00','🎮','Spielzeit','Draussen oder Brettspiel','tlr-b');row(tl,'19:00','🛁','Abend-Routine','Baden, Zaehne, Gute-Nacht-Geschichte','tlr-b')}
-  else if(s==='nawied'){row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln','tlr-nc');row(tl,'14:30','🦁','Nima von der Schule','Snack & Pause','tlr-ni');row(tl,'15:30','📖','Hausaufgaben Nima','Ruhige Lernzeit','tlr-ni');row(tl,'17:00','🍽️','Abendessen','Gemeinsam kochen','tlr-b');row(tl,'19:00','🛁','Badezimmer-Zeit','Zaehne putzen, Buch vorlesen','tlr-b');row(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tlr-nc');row(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hoerspiel','tlr-ni')}
+  else if(s==='ho-fr'){row(tl,'12:30','🦁','Nima kommt alleine nach Hause','Freitag · Schulschluss 12:30','tlr-ni');row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln prüfen','tlr-nc');row(tl,'17:00','🔄','Übergabe an Nawied','Freitag gerade KW · Meike → Nawied','tlr-hv');row(tl,'19:00','🍽️','Abendessen','Gemeinsam kochen','tlr-b');row(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tlr-nc');row(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hörspiel','tlr-ni')}
+  else if(s==='ho-mo'){row(tl,'12:00','🔄','Übergabe an Meike','Montag nach geradem Wochenende','tlr-hv');row(tl,'12:30','🦁','Nima kommt alleine nach Hause','Montag · Schulschluss 12:30','tlr-ni');row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln prüfen','tlr-nc')}
+  else if(isWE&&m.own==='nawied'){row(tl,'08:30','🌅','Gemeinsames Frühstück','Gemütlicher Start','tlr-b');row(tl,'10:00','🗺️','Ausflug oder Spielzeit','Edersee, Zoo, Spielplatz ...','tlr-b');row(tl,'12:30','🍕','Mittagessen','Gemeinsam kochen','tlr-b');row(tl,'14:00','😴','Nico: Mittagsschlaf','Ruhige Zeit','tlr-nc');row(tl,'16:00','🎮','Spielzeit','Draußen oder Brettspiel','tlr-b');row(tl,'19:00','🛁','Abend-Routine','Baden, Zähne, Gute-Nacht-Geschichte','tlr-b')}
+  else if(s==='nawied'){
+    const isMoFr=dow===1||dow===5;
+    if(isMoFr){
+      row(tl,'12:30','🦁','Nima kommt alleine nach Hause','Mo/Fr · Schulschluss 12:30','tlr-ni');
+      row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln prüfen','tlr-nc');
+    } else {
+      row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln prüfen','tlr-nc');
+      row(tl,'14:10','🦁','Nima am Domplatz abholen','Di/Mi/Do · Domplatz Fritzlar','tlr-ni');
+    }
+    row(tl,'15:30','📖','Hausaufgaben Nima','Ruhige Lernzeit','tlr-ni');
+    row(tl,'17:00','🍽️','Abendessen vorbereiten','Gemeinsam kochen','tlr-b');
+    row(tl,'19:00','🛁','Badezimmer-Zeit','Zähne putzen, Buch vorlesen','tlr-b');
+    row(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tlr-nc');
+    row(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hörspiel','tlr-ni')}
   else{row(tl,'','👩','Heute bei Meike','Einen schoenen Tag!','tlr-m')}}
 function buildWeek(){
   const now=new Date(),dow=now.getDay(),mon=new Date(now);mon.setDate(now.getDate()-(dow===0?6:dow-1));
@@ -331,8 +345,15 @@ function openDayModal(dateStr){
   else if(s==='ho-fr'){html+='<div class="modal-row"><span>17:00</span><span>🔄 Übergabe an Nawied</span></div>'}
   else if(s==='ho-mo'){html+='<div class="modal-row"><span>12:00</span><span>🔄 Übergabe an Meike</span></div>'}
   else if(!isWE&&(s==='nawied')){
-    html+='<div class="modal-row"><span>14:00</span><span>🐻 Nico aus KiGa abholen</span></div>';
-    html+='<div class="modal-row"><span>14:30</span><span>🦁 Nima von der Schule</span></div>';
+    const isMoFrModal=d.getDay()===1||d.getDay()===5;
+    const isTuWeThModal=d.getDay()===2||d.getDay()===3||d.getDay()===4;
+    if(isMoFrModal){
+      html+='<div class="modal-row"><span>12:30</span><span>🦁 Nima kommt alleine (Mo/Fr)</span></div>';
+      html+='<div class="modal-row"><span>14:00</span><span>🐻 Nico aus KiGa abholen</span></div>';
+    } else if(isTuWeThModal){
+      html+='<div class="modal-row"><span>14:00</span><span>🐻 Nico aus KiGa abholen</span></div>';
+      html+='<div class="modal-row"><span>14:10</span><span>🦁 Nima am Domplatz abholen</span></div>';
+    }
   } else if(isWE&&m.own==='nawied'){
     html+='<div class="modal-row"><span>10:00</span><span>🗺️ Ausflug oder Spielzeit</span></div>';
   } else {
