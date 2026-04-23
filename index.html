@@ -247,49 +247,46 @@ function buildMonth(){
   let nc=0,mc=0;
   for(let day=1;day<=last.getDate();day++){const d=new Date(y,mo,day);const key=dkey(d);const s=getStatus(d);const m=smeta(s);const isToday=d.toDateString()===now.toDateString();const ft=FEIERTAGE[key];const fer=ferienName(d);const fb=FB[key];const vor=VORANMELDEN.has(key);const pre=beforeStart(d);if(!pre){if(m.own==='nawied')nc++;else mc++}let tip=m.t;if(fb)tip+=' · Fussball: '+fb;if(ft)tip+=' · '+ft;if(fer)tip+=' · '+fer;if(vor)tip+=' · Voranmelden Nico';g.innerHTML+=`<div class="cc ${pre?'cc-pre':m.cc} ${isToday?'cc-today':''} ${fer&&!pre?'cc-fer':''} ${ft&&!pre?'cc-ft':''} ${fb?'cc-fb':''} ${vor&&!ft?'cc-vor':''}" onclick="openDayModal('${key}')" title="${tip}">${day}</div>`}
   document.getElementById('statsRow').innerHTML=`<div class="sb sb-n"><div class="sn">${nc}</div><div class="sl">Nawied-Tage</div></div><div class="sb sb-m"><div class="sn">${mc}</div><div class="sl">Meike-Tage</div></div>`}
-// GOOGLE KALENDER
-const ICAL_URL='https://calendar.google.com/calendar/ical/973ca0b6a9b13b247f9822d5f930492c8889a0c5a7fdb2fc0fa07ba1877c88c8%40group.calendar.google.com/public/basic.ics';
-// Mehrere Proxies zur Auswahl – wechselt automatisch bei Fehler
-const PROXIES=[
-  'https://corsproxy.io/?',
-  'https://api.allorigins.win/raw?url=',
-  'https://api.codetabs.com/v1/proxy?quest='
-];
+// GOOGLE KALENDER – direkt via API (immer aktuell, kein Cache)
+const CAL_ID='973ca0b6a9b13b247f9822d5f930492c8889a0c5a7fdb2fc0fa07ba1877c88c8%40group.calendar.google.com';
+const API_KEY='AIzaSyDQFXT-XRrOBJyl9tO1PYxnm4BoSlqArE0';
 let GC_EVENTS=[];
 
 async function loadGoogleCalendar(){
-  for(const proxy of PROXIES){
-    try{
-      const res=await fetch(proxy+encodeURIComponent(ICAL_URL),{cache:'no-store'});
-      if(!res.ok)continue;
-      const text=await res.text();
-      if(!text.includes('BEGIN:VCALENDAR'))continue;
-      GC_EVENTS=parseICAL(text);
-      renderGCCard();buildToday();buildWeek();buildMonth();buildUpcoming();
-      console.log('Kalender geladen via',proxy);
-      return;
-    }catch(e){console.warn('Proxy fehlgeschlagen:',proxy,e)}
-  }
-  console.warn('Alle Proxies fehlgeschlagen');
+  try{
+    const now=new Date();
+    const timeMin=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
+    const timeMax=new Date(now.getFullYear(),11,31,23,59,59).toISOString();
+    const url='https://www.googleapis.com/calendar/v3/calendars/'+CAL_ID+'/events'
+      +'?key='+API_KEY
+      +'&timeMin='+encodeURIComponent(timeMin)
+      +'&timeMax='+encodeURIComponent(timeMax)
+      +'&singleEvents=true&orderBy=startTime&maxResults=500';
+    const res=await fetch(url,{cache:'no-store'});
+    if(!res.ok){console.warn('API Fehler:',res.status,await res.text());return;}
+    const data=await res.json();
+    GC_EVENTS=parseAPIEvents(data.items||[]);
+    renderGCCard();buildToday();buildWeek();buildMonth();buildUpcoming();
+    console.log('Kalender geladen:',GC_EVENTS.length,'Termine');
+  }catch(e){console.warn('Kalender Fehler:',e)}
 }
 
-function parseICAL(text){
-  const events=[];
-  const blocks=text.split('BEGIN:VEVENT');
-  for(let i=1;i<blocks.length;i++){
-    const b=blocks[i];
-    const get=key=>{const m=b.match(new RegExp(key+'[^:]*:([^\r\n]+)'));return m?m[1].trim():''};
-    const summary=get('SUMMARY');const dtstart=get('DTSTART');const dtend=get('DTEND');
-    if(!summary||!dtstart)continue;
-    const pd=s=>{const d=s.replace(/T.*/,'');return new Date(d.slice(0,4)+'-'+d.slice(4,6)+'-'+d.slice(6,8))};
-    events.push({summary,start:pd(dtstart),end:dtend?pd(dtend):pd(dtstart)});
-  }
-  return events.sort((a,b)=>a.start-b.start);
+function parseAPIEvents(items){
+  return items.map(ev=>{
+    const allDay=!ev.start.dateTime;
+    const start=new Date(ev.start.dateTime||ev.start.date);
+    const end=new Date(ev.end.dateTime||ev.end.date);
+    return{summary:ev.summary||'',start,end,allDay};
+  }).sort((a,b)=>a.start-b.start);
 }
 
 function gcEventsOn(date){
-  const t=date.getTime();
-  return GC_EVENTS.filter(e=>{const s=e.start.getTime();const en=e.end.getTime();return t>=s&&t<(en>s?en:s+86400000)});
+  const ds=new Date(date);ds.setHours(0,0,0,0);
+  const de=new Date(date);de.setHours(23,59,59,999);
+  return GC_EVENTS.filter(e=>{
+    if(e.allDay) return e.start.getTime()<=ds.getTime()&&e.end.getTime()>ds.getTime();
+    return e.start.getTime()<=de.getTime()&&e.end.getTime()>=ds.getTime();
+  });
 }
 
 function renderGCCard(){
