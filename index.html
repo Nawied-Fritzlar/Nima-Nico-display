@@ -139,8 +139,8 @@
   </div>
   <div class="child">
     <div class="ch"><div class="av av-ni">🦁</div><div><div class="cn" style="color:var(--nima)">Nima</div><div class="ca">6 Jahre · Schulkind</div></div></div>
-    <div class="ir"><span class="ii">🏫</span>Mo+Fr: Schulschluss <strong>12:30</strong> – kommt alleine</div>
-    <div class="ir"><span class="ii">🏫</span>Di+Mi+Do: Abholung <strong>Domplatz 14:10</strong></div>
+    <div class="ir"><span class="ii">🏫</span><span>Mo & Fr: Schulschluss <strong>12:30</strong> – kommt alleine heim</span></div>
+    <div class="ir"><span class="ii">📍</span><span>Di, Mi & Do: Abholung <strong>Domplatz 14:10</strong></span></div>
     <div class="ir"><span class="ii">🎒</span>Rucksack: Hausaufgaben & Trinkflasche</div>
     <div class="ir"><span class="ii">🍎</span>Snack nach der Schule</div>
     <div class="ir"><span class="ii">📖</span>Hausaufgaben am Nachmittag</div>
@@ -148,10 +148,10 @@
   </div>
   <div class="child">
     <div class="ch"><div class="av av-nc">🐻</div><div><div class="cn" style="color:var(--nico)">Nico</div><div class="ca">2 Jahre · Kindergartenkind</div></div></div>
-    <div class="ir"><span class="ii">🧸</span>KiGa endet <strong>&nbsp;14:00 Uhr</strong></div>
-    <div class="ir"><span class="ii">👜</span>KiGa-Tasche nicht vergessen</div>
+    <div class="ir"><span class="ii">🧸</span><span>Täglich Abholung KiGa um <strong>14:00 Uhr</strong></span></div>
+    <div class="ir"><span class="ii">👜</span>KiGa-Tasche & Windeln nicht vergessen</div>
     <div class="ir"><span class="ii">😴</span>Mittagsschlaf wenn möglich</div>
-    <div class="ir"><span class="ii">🍼</span>Windeln & Wechselkleidung prüfen</div>
+    <div class="ir"><span class="ii">🍼</span>Wechselkleidung prüfen</div>
     <div class="ir"><span class="ii">🛁</span>Abend: Baden · Gute-Nacht-Ritual</div>
   </div>
   <div class="fb-card"><div class="sec">⚽ Nimas Fußball-Turniere 2026</div><div class="fb-grid" id="fbGrid"></div></div>
@@ -249,17 +249,28 @@ function buildMonth(){
   document.getElementById('statsRow').innerHTML=`<div class="sb sb-n"><div class="sn">${nc}</div><div class="sl">Nawied-Tage</div></div><div class="sb sb-m"><div class="sn">${mc}</div><div class="sl">Meike-Tage</div></div>`}
 // GOOGLE KALENDER
 const ICAL_URL='https://calendar.google.com/calendar/ical/973ca0b6a9b13b247f9822d5f930492c8889a0c5a7fdb2fc0fa07ba1877c88c8%40group.calendar.google.com/public/basic.ics';
-const PROXY='https://api.allorigins.win/raw?url=';
+// Mehrere Proxies zur Auswahl – wechselt automatisch bei Fehler
+const PROXIES=[
+  'https://corsproxy.io/?',
+  'https://api.allorigins.win/raw?url=',
+  'https://api.codetabs.com/v1/proxy?quest='
+];
 let GC_EVENTS=[];
 
 async function loadGoogleCalendar(){
-  try{
-    const res=await fetch(PROXY+encodeURIComponent(ICAL_URL));
-    if(!res.ok)return;
-    const text=await res.text();
-    GC_EVENTS=parseICAL(text);
-    renderGCCard();buildToday();buildWeek();buildMonth();
-  }catch(e){console.warn('Kalender nicht geladen',e)}
+  for(const proxy of PROXIES){
+    try{
+      const res=await fetch(proxy+encodeURIComponent(ICAL_URL),{cache:'no-store'});
+      if(!res.ok)continue;
+      const text=await res.text();
+      if(!text.includes('BEGIN:VCALENDAR'))continue;
+      GC_EVENTS=parseICAL(text);
+      renderGCCard();buildToday();buildWeek();buildMonth();buildUpcoming();
+      console.log('Kalender geladen via',proxy);
+      return;
+    }catch(e){console.warn('Proxy fehlgeschlagen:',proxy,e)}
+  }
+  console.warn('Alle Proxies fehlgeschlagen');
 }
 
 function parseICAL(text){
@@ -421,7 +432,7 @@ function buildUpcoming(){
 tick();buildToday();buildFB();buildWeek();buildMonth();buildUpcoming();
 loadGoogleCalendar();
 setInterval(()=>{tick();buildToday();buildWeek();},60000);
-setInterval(()=>{loadGoogleCalendar();buildUpcoming();},5*60*1000);
+setInterval(()=>{loadGoogleCalendar();buildUpcoming();},2*60*1000); // alle 2 Min.
 </script>
 
 <!-- TAGES-MODAL -->
