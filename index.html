@@ -211,7 +211,23 @@ function buildToday(){
   if(pre){row(tl,'','📅','Plan noch nicht gestartet','Ab 20. April 2026','tlr-b');return}
   const isWE=dow===0||dow===6;
   if(fb)row(tl,'','⚽',`Turnier: ${fb}`,'Nimas Fussball-Turnier heute','tlr-fb');
-  if(s==='ho-di'){row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln prüfen','tlr-nc');row(tl,'14:10','🦁','Nima am Domplatz abholen','Domplatz Fritzlar · Snack danach','tlr-ni');row(tl,'16:00','🔄','Übergabe an Nawied','Dienstag · Meike → Nawied','tlr-hv');row(tl,'17:00','🍽️','Abendessen','Gemeinsam kochen','tlr-b');row(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tlr-nc');row(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hörspiel','tlr-ni')}
+  if(s==='ho-di'){
+    // Prüfe ob ein Sondertermin die Übergabezeit überschreibt
+    const gcToday=gcEventsOn(now);
+    const sonder=gcToday.find(e=>e.summary&&(e.summary.includes('Sondertermin')||e.summary.includes('14:00')||e.summary.includes('13:00')||e.summary.includes('15:00'))&&e.summary.toLowerCase().includes('übergabe'));
+    const uebergabeZeit=sonder?sonder.start.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'16:00';
+    const uebergabeLabel=sonder?`Übergabe an Nawied (${uebergabeZeit} – Sondertermin)`:'Übergabe an Nawied';
+    row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln prüfen','tlr-nc');
+    row(tl,'14:10','🦁','Nima am Domplatz abholen','Domplatz Fritzlar · Snack danach','tlr-ni');
+    row(tl,uebergabeZeit,'🔄',uebergabeLabel,'Dienstag · Meike → Nawied','tlr-hv');
+    // Weitere Kalender-Termine des Tages anzeigen
+    gcToday.filter(e=>!e.summary.toLowerCase().includes('übergabe')&&!e.summary.includes('Tagesüber')&&!e.summary.includes('abholen')&&!e.summary.includes('Schulschluss')).forEach(e=>{
+      const t=e.allDay?'':e.start.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+      row(tl,t,'📅',e.summary,'','tlr-b');
+    });
+    row(tl,'17:00','🍽️','Abendessen','Gemeinsam kochen','tlr-b');
+    row(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tlr-nc');
+    row(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hörspiel','tlr-ni')}
   else if(s==='ho-do'){row(tl,'12:00','🔄','Uebergabe an Meike','Donnerstag · Nawied -> Meike','tlr-hv')}
   else if(s==='ho-fr'){row(tl,'12:30','🦁','Nima kommt alleine nach Hause','Freitag · Schulschluss 12:30','tlr-ni');row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln prüfen','tlr-nc');row(tl,'17:00','🔄','Übergabe an Nawied','Freitag gerade KW · Meike → Nawied','tlr-hv');row(tl,'19:00','🍽️','Abendessen','Gemeinsam kochen','tlr-b');row(tl,'20:00','😴','Nico schlafen','Gute-Nacht-Ritual','tlr-nc');row(tl,'20:30','📖','Nima Bettzeit','Lesen oder Hörspiel','tlr-ni')}
   else if(s==='ho-mo'){row(tl,'12:00','🔄','Übergabe an Meike','Montag nach geradem Wochenende','tlr-hv');row(tl,'12:30','🦁','Nima kommt alleine nach Hause','Montag · Schulschluss 12:30','tlr-ni');row(tl,'14:00','🐻','Nico aus KiGa','KiGa-Tasche & Windeln prüfen','tlr-nc')}
@@ -369,7 +385,13 @@ function openDayModal(dateStr){
   // Tagesablauf
   html+='<div class="modal-sec">Tagesablauf</div>';
   const isWE=d.getDay()===0||d.getDay()===6;
-  if(s==='ho-di'){html+='<div class="modal-row"><span>16:00</span><span>🔄 Übergabe an Nawied</span></div>'}
+  if(s==='ho-di'){
+      const gcD=gcEventsOn(d);
+      const sonderD=gcD.find(e=>e.summary&&(e.summary.includes('Sondertermin')||e.summary.includes('14:00')||e.summary.includes('13:00')||e.summary.includes('15:00'))&&e.summary.toLowerCase().includes('übergabe'));
+      const uzeit=sonderD?sonderD.start.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'16:00';
+      const ulabel=sonderD?`Übergabe an Nawied – ${uzeit} (Sondertermin)`:'Übergabe an Nawied – 16:00';
+      html+=`<div class="modal-row"><span>${uzeit}</span><span>🔄 ${ulabel}</span></div>`;
+    }
   else if(s==='ho-do'){html+='<div class="modal-row"><span>12:00</span><span>🔄 Übergabe an Meike</span></div>'}
   else if(s==='ho-fr'){html+='<div class="modal-row"><span>17:00</span><span>🔄 Übergabe an Nawied</span></div>'}
   else if(s==='ho-mo'){html+='<div class="modal-row"><span>12:00</span><span>🔄 Übergabe an Meike</span></div>'}
