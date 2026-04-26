@@ -90,6 +90,7 @@
   .cc-fer{background-image:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(34,197,94,.26) 3px,rgba(34,197,94,.26) 6px)}
   .cc-ft::after{content:'';position:absolute;top:2px;right:2px;width:4px;height:4px;border-radius:50%;background:var(--ft)}
   .cc-fb::before{content:'⚽';position:absolute;bottom:0;left:1px;font-size:.46rem;line-height:1}
+  .cc-segel::after{content:'⛵';position:absolute;top:0;right:1px;font-size:.46rem;line-height:1}
   .cc-vor::after{content:'🐻';position:absolute;top:0;right:1px;font-size:.44rem;line-height:1}
   .cc-pre{background:#f0f4f8;color:#bbb}
   .tip{display:none;position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);background:#1a2340;color:#fff;font-size:.62rem;padding:3px 7px;border-radius:5px;white-space:nowrap;z-index:20}
@@ -182,6 +183,12 @@ const FEIERTAGE={'2026-05-01':'Tag der Arbeit','2026-05-14':'Christi Himmelfahrt
 const VORANMELDEN=new Set(['2026-05-15','2026-06-05']);
 const FUSSBALL=[{date:'2026-04-26',label:'Edermünde Jungs'},{date:'2026-05-03',label:'Metze / Chattengau'},{date:'2026-05-10',label:'Edermünde Mädels'},{date:'2026-05-17',label:'Brunslar / Wolfershausen'},{date:'2026-05-31',label:'Geismar / H/L/K/Z'}];
 const FB={};FUSSBALL.forEach(f=>FB[f.date]=f.label);
+
+// Segelkurs: 06.07.–10.07.2026
+const SEGELKURS=new Set(['2026-07-06','2026-07-07','2026-07-08','2026-07-09','2026-07-10']);
+
+// Karneval 2027: Nawied übernimmt 06.02.–09.02.2027
+const KARNEVAL=new Set(['2027-02-06','2027-02-07','2027-02-08','2027-02-09']);
 const FERIEN=[{s:'2026-06-29',e:'2026-08-08',n:'Sommerferien'},{s:'2026-10-05',e:'2026-10-17',n:'Herbstferien'},{s:'2026-12-23',e:'2026-12-31',n:'Weihnachtsferien'}];
 const MN=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 const DS=['Mo','Di','Mi','Do','Fr','Sa','So'];
@@ -211,6 +218,12 @@ function buildToday(){
   if(pre){row(tl,'','📅','Plan noch nicht gestartet','Ab 20. April 2026','tlr-b');return}
   const isWE=dow===0||dow===6;
   if(fb)row(tl,'','⚽',`Turnier: ${fb}`,'Nimas Fussball-Turnier heute','tlr-fb');
+  if(SEGELKURS.has(key))row(tl,'09:00','⛵','Segelkurs – Edersee','Nima: Jüngstensegelkurs I · Segelschule Rehbach','tlr-fb');
+  if(KARNEVAL.has(key)){
+    if(key==='2027-02-06') row(tl,'14:00','🎭','Nawied übernimmt Nima & Nico','Meike hat Karneval · Übergabe 14:00','tlr-n');
+    else if(key==='2027-02-09') row(tl,'12:00','🔄','Übergabe zurück an Meike','Ende Karneval · 12:00 Uhr','tlr-hv');
+    else row(tl,'','🎭','Nawied betreut (Karneval)','Meike hat Karneval','tlr-n');
+  }
   if(s==='ho-di'){
     // Prüfe ob ein Sondertermin die Übergabezeit überschreibt
     const gcToday=gcEventsOn(now);
@@ -250,7 +263,9 @@ function buildToday(){
 function buildWeek(){
   const now=new Date(),dow=now.getDay(),mon=new Date(now);mon.setDate(now.getDate()-(dow===0?6:dow-1));
   const g=document.getElementById('weekGrid');g.innerHTML='';
-  for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const key=dkey(d);const s=getStatus(d);const m=smeta(s);const isToday=d.toDateString()===now.toDateString();const ft=FEIERTAGE[key];const fer=ferienName(d);const fb=FB[key];const vor=VORANMELDEN.has(key);const pre=beforeStart(d);const dim=(m.own==='meike'&&!isToday)||pre;let extra='';if(fb)extra+=`<div class="dc-x" style="color:var(--fb)">⚽ Turnier</div>`;else if(ft)extra+=`<div class="dc-x" style="color:var(--ft)">🎉 ${ft.split(' ')[0]}</div>`;else if(fer)extra+=`<div class="dc-x" style="color:var(--fer)">🌿 Ferien</div>`;if(vor)extra+=`<div class="dc-x" style="color:var(--nico)">🐻 Voranm.</div>`;g.innerHTML+=`<div class="dc ${isToday?'dc-today':''} ${dim?'dc-dim':''} ${fer&&!isToday?'dc-fer':''} ${ft&&!isToday?'dc-ft':''} ${fb&&!isToday?'dc-fb':''}"><div class="dn">${DS[i]}</div><div class="dd">${d.getDate()}</div><div class="db ${isToday?'':m.wc}">${m.t}</div>${extra}</div>`}}
+  for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const key=dkey(d);const s=getStatus(d);const m=smeta(s);const isToday=d.toDateString()===now.toDateString();const ft=FEIERTAGE[key];const fer=ferienName(d);const fb=FB[key];const vor=VORANMELDEN.has(key);const pre=beforeStart(d);const dim=(m.own==='meike'&&!isToday)||pre;let extra='';if(fb)extra+=`<div class="dc-x" style="color:var(--fb)">⚽ Turnier</div>`;
+    if(SEGELKURS.has(key))extra+=`<div class="dc-x" style="color:#0369a1">⛵ Segelkurs</div>`;
+    if(KARNEVAL.has(key))extra+=`<div class="dc-x" style="color:#7e22ce">🎭 Karneval</div>`;else if(ft)extra+=`<div class="dc-x" style="color:var(--ft)">🎉 ${ft.split(' ')[0]}</div>`;else if(fer)extra+=`<div class="dc-x" style="color:var(--fer)">🌿 Ferien</div>`;if(vor)extra+=`<div class="dc-x" style="color:var(--nico)">🐻 Voranm.</div>`;g.innerHTML+=`<div class="dc ${isToday?'dc-today':''} ${dim?'dc-dim':''} ${fer&&!isToday?'dc-fer':''} ${ft&&!isToday?'dc-ft':''} ${fb&&!isToday?'dc-fb':''}"><div class="dn">${DS[i]}</div><div class="dd">${d.getDate()}</div><div class="db ${isToday?'':m.wc}">${m.t}</div>${extra}</div>`}}
 let viewDate=new Date();viewDate.setDate(1);
 function changeMonth(dir){viewDate.setMonth(viewDate.getMonth()+dir);buildMonth()}
 function buildMonth(){
@@ -261,7 +276,9 @@ function buildMonth(){
   DS.forEach(d=>{g.innerHTML+=`<div class="ch2">${d}</div>`});
   for(let i=0;i<sd;i++)g.innerHTML+=`<div class="cc cc-0"></div>`;
   let nc=0,mc=0;
-  for(let day=1;day<=last.getDate();day++){const d=new Date(y,mo,day);const key=dkey(d);const s=getStatus(d);const m=smeta(s);const isToday=d.toDateString()===now.toDateString();const ft=FEIERTAGE[key];const fer=ferienName(d);const fb=FB[key];const vor=VORANMELDEN.has(key);const pre=beforeStart(d);if(!pre){if(m.own==='nawied')nc++;else mc++}let tip=m.t;if(fb)tip+=' · Fussball: '+fb;if(ft)tip+=' · '+ft;if(fer)tip+=' · '+fer;if(vor)tip+=' · Voranmelden Nico';g.innerHTML+=`<div class="cc ${pre?'cc-pre':m.cc} ${isToday?'cc-today':''} ${fer&&!pre?'cc-fer':''} ${ft&&!pre?'cc-ft':''} ${fb?'cc-fb':''} ${vor&&!ft?'cc-vor':''}" onclick="openDayModal('${key}')" title="${tip}">${day}</div>`}
+  for(let day=1;day<=last.getDate();day++){const d=new Date(y,mo,day);const key=dkey(d);const s=getStatus(d);const m=smeta(s);const isToday=d.toDateString()===now.toDateString();const ft=FEIERTAGE[key];const fer=ferienName(d);const fb=FB[key];const vor=VORANMELDEN.has(key);const pre=beforeStart(d);if(!pre){if(m.own==='nawied')nc++;else mc++}let tip=m.t;if(fb)tip+=' · Fussball: '+fb;
+    if(SEGELKURS.has(key))tip+=' · ⛵ Segelkurs Edersee';
+    if(KARNEVAL.has(key))tip+=' · 🎭 Karneval – Nawied betreut';if(ft)tip+=' · '+ft;if(fer)tip+=' · '+fer;if(vor)tip+=' · Voranmelden Nico';g.innerHTML+=`<div class="cc ${pre?'cc-pre':m.cc} ${isToday?'cc-today':''} ${fer&&!pre?'cc-fer':''} ${ft&&!pre?'cc-ft':''} ${fb?'cc-fb':''} ${SEGELKURS.has(key)?'cc-segel':''} ${vor&&!ft?'cc-vor':''}" onclick="openDayModal('${key}')" title="${tip}">${day}</div>`}
   document.getElementById('statsRow').innerHTML=`<div class="sb sb-n"><div class="sn">${nc}</div><div class="sl">Nawied-Tage</div></div><div class="sb sb-m"><div class="sn">${mc}</div><div class="sl">Meike-Tage</div></div>`}
 // GOOGLE KALENDER – iCal
 const ICAL_URL='https://calendar.google.com/calendar/ical/973ca0b6a9b13b247f9822d5f930492c8889a0c5a7fdb2fc0fa07ba1877c88c8%40group.calendar.google.com/public/basic.ics';
@@ -427,6 +444,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementB
 function buildUpcoming(){
   const now=new Date();now.setHours(0,0,0,0);
   const limit=new Date(now);limit.setDate(limit.getDate()+42); // 6 Wochen
+  // Für Sonderereignisse im nächsten Jahr auch weiter schauen
+  const limitLong=new Date(now);limitLong.setFullYear(limitLong.getFullYear()+1);
   const list=document.getElementById('upcomingList');
   if(!list)return;
   const rows=[];
@@ -466,6 +485,26 @@ function buildUpcoming(){
       </div>
     </div>`);
   }
+  // Karneval 2027 immer anzeigen falls noch nicht vorbei
+  const karnevalDates=[
+    {date:'2027-02-06',label:'🎭 Nawied übernimmt (Karneval) – 14:00'},
+    {date:'2027-02-09',label:'🔄 Übergabe → Meike (Ende Karneval) – 12:00'},
+  ];
+  karnevalDates.forEach(k=>{
+    const d=new Date(k.date);
+    if(d>=now){
+      const dayNum=d.getDate();
+      const mon=MN[d.getMonth()].slice(0,3);
+      const wday=['So','Mo','Di','Mi','Do','Fr','Sa'][d.getDay()];
+      rows.push(`<div class="upi" onclick="openDayModal('${k.date}')">
+        <div class="upi-l"><div class="upi-day">${dayNum}</div><div class="upi-mon">${mon} ${d.getFullYear()} ${wday}</div></div>
+        <div class="upi-r">
+          <div class="upi-title">${k.label}</div>
+          <div class="upi-tags"><span class="upi-tag" style="background:#fdf4ff;color:#7e22ce">🎭 Karneval</span></div>
+        </div>
+      </div>`);
+    }
+  });
   list.innerHTML=rows.length>0?rows.join(''):'<div style="color:var(--muted);font-size:.82rem;padding:8px 0">Keine besonderen Termine in den nächsten 6 Wochen</div>';
 }
 
